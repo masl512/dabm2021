@@ -47,14 +47,22 @@ def extract(refMatrix,inMatrix):
     # dataset = pd.read_csv(datos) # Leer los datos con Panda  
     headers = []
     values = []
-    buff = ''
-    for item in refMatrix:
-        header = get_matches(item,inMatrix)
-        if (header in inMatrix) and (buff is not header):
-            idx = inMatrix.index(header)
-            buff = inMatrix[idx+1]
-            headers.append(header)
-            values.append(buff)
+    # buff = ''
+    # for item in refMatrix:
+    #     # header = get_matches(item,inMatrix)
+    #     if (header in inMatrix) and (buff is not header):
+    #         idx = inMatrix.index(header)
+    #         buff = inMatrix[idx+1]
+    #         headers.append(header)
+    #         values.append(buff)
+    match = get_matches("CODIGO DEL PRESTADOR",inMatrix)
+    idx = inMatrix.index(match)
+    del inMatrix[0:idx]
+    for item in inMatrix:
+        if item.isupper():
+            headers.append(item)
+        else:
+            values.append(item)
     print(headers)
     print(values)
     return headers,values

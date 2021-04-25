@@ -121,7 +121,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
             # print(txt)
 
             text.append(txt)
-            cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
+            # cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
     matx = []
     for e in text:
         mod1 = e.replace('\n','')
