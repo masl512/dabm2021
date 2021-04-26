@@ -220,7 +220,6 @@ def main():
     print("3.salir")
     # op= input(">>")
     op = "2"
-    # op = op.lower()
     if (op=="1"):
         crear_usuario()
     elif (op=="2"):

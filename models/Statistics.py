@@ -1,10 +1,12 @@
 import numpy as np
+from math import isnan
 import matplotlib.pyplot as plt
 from datetime import datetime
 from datetime import timedelta
 from datetime import date
 import os
 import pandas as pd
+from models.Extract import get_matches
 
 class Estadistica():
     def __init__(self,_file):
@@ -56,3 +58,41 @@ class Estadistica():
                 autopct='%1.1f%%', shadow=True, startangle=90)
         plt.title('Tiempo hasta el proximo matenimiento')
         plt.show()
+
+    def addIndividual(self):
+        directorio = os.path.dirname(__file__)
+        file = r"..\data\hdvEquipos.csv"
+        archivoUsuarios=os.path.join(directorio,file)
+        # file = open(archivoUsuarios,"r")
+        # datos = file.readlines()
+        # file.close()
+        datos = pd.read_csv(archivoUsuarios)
+        tam = len(datos)
+        col_n_act = get_matches("No DE ACTIVO",datos.loc[[0]])
+        n_act = datos.loc[tam-1,col_n_act]
+        col_fecha = get_matches("FECHA DE INSTALACION",datos.loc[[0]])
+        fecha = datos.loc[tam-1,col_fecha]
+        mants = ["MENSUAL","BIMENSUAL","TRIMESTRAL","SEMESTRAL"]
+        mantenimiento = self.search(mants,datos)
+        risk = ["BAJO(I)","MODERADO(IIa)","ALTO(IIb)","MUY ALTO(III)"]
+        riesgo = self.search(risk,datos)
+        clasificacion = "-"
+        use = ["MEDICO","BASICO","APOYO","INDUSTRIAL"]
+        uso = self.search(use,datos)
+        indiv = [[n_act , fecha , mantenimiento , riesgo , clasificacion , uso]]
+        archivoUsuarios=os.path.join(directorio,"individual.csv")
+        df1 = pd.DataFrame(indiv)
+        df1.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))
+
+    
+    def search(self,opts,datos):
+        tam = len(datos)
+        for m in opts:
+            idx_opt = get_matches(m,datos.loc[[0]])
+            item = datos.loc[tam-1,idx_opt]
+            if not isnan(item):
+                opt = datos.loc[tam-1,idx_opt]
+            else:
+                opt = "-"
+        return opt
+

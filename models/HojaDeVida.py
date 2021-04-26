@@ -5,6 +5,7 @@ import csv
 
 from models.Converter import convert,getData
 from models.Extract import readHV
+from models.Statistics import Estadistica
 
 class HojaDeVida():
     def __init__(self): 
@@ -30,3 +31,6 @@ class HojaDeVida():
         file.close()
         df = pd.read_csv(datos)
         print(df)
+        _file=r"individual.csv"
+        Estadistica(_file).addIndividual()
+

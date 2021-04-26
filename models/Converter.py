@@ -8,7 +8,7 @@ import difflib
 
 from models import Contours
 from models.Contours import sort_contours
-from models.Extract import extract, readHV, create
+from models.Extract import extract, readHV, createHeaders
 
 def convert():
     file = easygui.fileopenbox()
@@ -141,9 +141,9 @@ def  get_matches(matrix,refTitle):
     return match
 
 def getData(refMatrix):
-    hdv = readHV('HV_BENEHEART_D6.csv')
-    headers,values = extract(hdv,refMatrix)
-    create(headers,values)
+    # hdv = readHV('HV_BENEHEART_D6.csv')
+    headers,values = extract(refMatrix)
+    createHeaders(headers,values)
 
         
     
