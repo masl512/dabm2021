@@ -102,11 +102,15 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
             # cv2.imshow('image',tresh)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
-            # kernel = np.ones((1,1),np.uint8)
-            # dilation = cv2.dilate(tresh,kernel,iterations = 1)   
+
+            kernel = np.ones((1,1),np.uint8)
+            dilation = cv2.dilate(tresh,kernel,iterations = 1)   
+            # cv2.imshow('image',dilation)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()            
             
             kernel = np.ones((1,2),np.uint8)
-            erosion = cv2.erode(tresh,kernel,iterations = 1)
+            erosion = cv2.erode(dilation,kernel,iterations = 1)
             # cv2.imshow('image',erosion)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()            
@@ -118,7 +122,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
 
             custom_config = r'--oem 3 --psm 6'
             txt = pytesseract.image_to_string(invert,config= custom_config)
-            # print(txt)
+            print(txt)
 
             text.append(txt)
             # cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
@@ -135,7 +139,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
 
     # # box_extraction("41.jpg", "./Cropped/")
 
-def  get_matches(matrix,refTitle):
+def get_matches(matrix,refTitle):
     match = difflib.get_close_matches(refTitle,matrix)
     match = match[0]
     return match

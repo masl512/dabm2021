@@ -12,8 +12,7 @@ def createHeaders(headers,values):
     if os.stat(datos).st_size == 0:
         columnas =pd.DataFrame([headers])
         columnas.to_csv(datos, index=None, mode="a", header=not os.path.isfile(datos))
-    data1 = [values]
-    df1 = pd.DataFrame(data1)
+    df1 = pd.DataFrame([values])
     df1.to_csv(datos, index=None, mode="a", header=not os.path.isfile(datos))
 
 def  get_matches(refTitle,matrix):
@@ -38,22 +37,12 @@ def readHV(fileName):
     return matriz
 
 def extract(inMatrix):
-    # direct = os.path.dirname(__file__)
-    # datos = os.path.join(direct,self._file) # Path completo de los datos
-    # dataset = pd.read_csv(datos) # Leer los datos con Panda  
     headers = []
     values = []
-    # buff = ''
-    # for item in refMatrix:
-    #     # header = get_matches(item,inMatrix)
-    #     if (header in inMatrix) and (buff is not header):
-    #         idx = inMatrix.index(header)
-    #         buff = inMatrix[idx+1]
-    #         headers.append(header)
-    #         values.append(buff)
     match = get_matches("CODIGO DEL PRESTADOR",inMatrix)
     idx = inMatrix.index(match)
     del inMatrix[0:idx]
+
     for item in inMatrix:
         cnt = 0
         for i in item:
@@ -65,6 +54,8 @@ def extract(inMatrix):
                 headers.append(item)
             else:
                 values.append(item)
+        else:
+            values.append("-")
     print(headers)
     print(values)
     return headers,values

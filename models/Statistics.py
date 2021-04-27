@@ -66,12 +66,17 @@ class Estadistica():
         # file = open(archivoUsuarios,"r")
         # datos = file.readlines()
         # file.close()
-        datos = pd.read_csv(archivoUsuarios)
-        tam = len(datos)
-        col_n_act = get_matches("No DE ACTIVO",datos.loc[[0]])
-        n_act = datos.loc[tam-1,col_n_act]
-        col_fecha = get_matches("FECHA DE INSTALACION",datos.loc[[0]])
-        fecha = datos.loc[tam-1,col_fecha]
+        datos = pd.read_csv(archivoUsuarios, sep=',' , index_col= False)
+        head_list = list(datos.columns.values)
+        vals_list = list(datos.values)
+
+        col_n_act = get_matches("No DE ACTIVO",head_list)
+        idx = head_list.index(col_n_act)
+        n_act = list(datos.loc[:,col_n_act])
+        n_act = n_act[-1]
+        col_fecha = get_matches("FECHA DE INSTALACION",head_list)
+        fecha = list(datos.loc[:,col_fecha])
+        fecha = fecha[-1]
         mants = ["MENSUAL","BIMENSUAL","TRIMESTRAL","SEMESTRAL"]
         mantenimiento = self.search(mants,datos)
         risk = ["BAJO(I)","MODERADO(IIa)","ALTO(IIb)","MUY ALTO(III)"]
@@ -86,13 +91,13 @@ class Estadistica():
 
     
     def search(self,opts,datos):
-        tam = len(datos)
         for m in opts:
-            idx_opt = get_matches(m,datos.loc[[0]])
-            item = datos.loc[tam-1,idx_opt]
-            if not isnan(item):
-                opt = datos.loc[tam-1,idx_opt]
-            else:
+            idx_opt = get_matches(m,list(datos))
+            item = list(datos.loc[:,idx_opt])
+            item = item[-1]
+            if item == "nan":
                 opt = "-"
+            else:
+                opt = item
         return opt
 
