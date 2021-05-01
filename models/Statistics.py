@@ -79,7 +79,7 @@ class Estadistica():
         fecha = fecha[-1]
         mants = ["MENSUAL","BIMENSUAL","TRIMESTRAL","SEMESTRAL"]
         mantenimiento = self.search(mants,datos)
-        risk = ["BAJO(I)","MODERADO(IIa)","ALTO(IIb)","MUY ALTO(III)"]
+        risk = ["BAJO","MODERADO","ALTO","MUY ALTO"]
         riesgo = self.search(risk,datos)
         clasificacion = "-"
         use = ["MEDICO","BASICO","APOYO","INDUSTRIAL"]

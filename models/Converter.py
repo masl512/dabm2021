@@ -22,14 +22,15 @@ def convert():
 
 def box_extraction(img_for_box_extraction_path, cropped_dir_path):   
     img = cv2.imread(img_for_box_extraction_path, 0)  # Read the image
-    scale_percent = 80 # percent of original size
+    scale_percent = 70 # percent of original size
     width = int(img.shape[1] * scale_percent / 100)
     height = int(img.shape[0] * scale_percent / 100)
     dim = (width, height)  
     # resize image
     resized = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
     # resized = cv2.resize(img, (960,540))
-
+    
+    # DETECTAR Y EXTRAER LÍNEAS DE LA IMAGEN
     (thresh, img_bin) = cv2.threshold(resized, 150, 255, 
     cv2.THRESH_BINARY | cv2.THRESH_OTSU)  # Thresholding the image
     img_bin = 255-img_bin  # Invert the image
@@ -67,25 +68,32 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
     cv2.imwrite("img_final_bin.jpg",img_final_bin)
     # Find contours for image, which will detect all the boxes
     contours, hierarchy = cv2.findContours(img_final_bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    # cv2.drawContours(img_final_bin,contours,-1,(0,255,0),3)
-    # cv2.imshow('image',img_final_bin)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-    
-    # print(contours)
     # Sort all the contours by top to bottom.
     (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
+    # boundingBoxes = sort_contours(contours, method="top-to-bottom")
     idx = 0
 
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     text = []
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2))
+    groups = []
+    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2))
+    # for c in contours:
+    coords = [0,0,0,0]
     for c in contours:
     # Returns the location and width,height for every contour
         x, y, w, h = cv2.boundingRect(c)
+        b = [x,y,w,h]
+        # x = b[0]
+        # y = b[1]
+        # w = b[2]
+        # h = b[3]
         # If the box height is greater then 20, widht is >80, then only save it as a box in "cropped/" folder.
-        if (w > 20 and h > 10) and w > 4*h:
+        if (w > 20 and h > 10) and w > 3*h:
+            ncoords = b
             idx += 1
+            
+            group = getCellGroup(coords,ncoords,resized)
+            groups.append(group)
 
             new_img = resized[y-3:y+h+3, x-2:x+w]
             # cv2.imshow('image',new_img)
@@ -94,29 +102,37 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
             # # gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
             
             blur = cv2.GaussianBlur(new_img,(3,3),0)
-            # cv2.imshow('image',blur)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()            
-            
-            tresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-            # cv2.imshow('image',tresh)
+            # cv2.imshow('blur',blur)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
 
+            tresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+            # cv2.imshow('tresh',tresh)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2)) # Operador morfol+ogico de apertura
+            openmorf = cv2.morphologyEx(tresh, cv2.MORPH_OPEN, kernel,iterations=1)
+            # cv2.imshow('open',openmorf)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()     
+
             kernel = np.ones((1,1),np.uint8)
-            dilation = cv2.dilate(tresh,kernel,iterations = 1)   
-            # cv2.imshow('image',dilation)
+            dilation = cv2.dilate(openmorf,kernel,iterations = 1)   
+            # cv2.imshow('dilat',dilation)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()            
             
             kernel = np.ones((1,2),np.uint8)
             erosion = cv2.erode(dilation,kernel,iterations = 1)
-            # cv2.imshow('image',erosion)
+            # cv2.imshow('erode',erosion)
             # cv2.waitKey(0)
-            # cv2.destroyAllWindows()            
+            # cv2.destroyAllWindows()
+
+            median = cv2.medianBlur(erosion,1)      
             
-            invert = 255 - erosion
-            # cv2.imshow('image',invert)
+            invert = 255 - median
+            # cv2.imshow('invert',invert)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()            
 
@@ -126,6 +142,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
 
             text.append(txt)
             # cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
+            coords = b
     matx = []
     for e in text:
         mod1 = e.replace('\n','')
@@ -149,7 +166,35 @@ def getData(refMatrix):
     headers,values = extract(refMatrix)
     createHeaders(headers,values)
 
-        
+def getCellGroup(coords,ncoords,resized):
+    corner = coords[0]+coords[2] # Esquina superior izquierda de la celda anterior
+    lcorner = coords[1]+coords[3] # Esquina inferior izquierda de la celda anterior
+    ncorner = ncoords[1]+ncoords[3] # Esquina inferior izquierda de la nueva celda
+    if (ncoords[0] >= corner-170) and (ncoords[0] <= corner+170) and (ncorner>=lcorner-100) and (ncorner<=lcorner+100):
+        group = [coords,ncoords]
+        print(group)
+        x1 = group[0][0] 
+        y1 = group[0][1] 
+        w1 = group[0][2] 
+        h1 = group[0][3] 
+        testimg1 = resized[y1-3:y1+h1+3, x1-2:x1+w1]
+        cv2.imshow('image',testimg1)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()    
+
+        x2 = group[1][0] 
+        y2 = group[1][1] 
+        w2 = group[1][2] 
+        h2 = group[1][3] 
+        testimg1 = resized[y2-3:y2+h2+3, x2-2:x2+w2]
+        cv2.imshow('image',testimg1)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()            
+
+
+        #agrupo coords y ncoords
+
+
     
 
     #Extraer fecha de operación
