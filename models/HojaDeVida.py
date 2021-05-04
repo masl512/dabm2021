@@ -3,7 +3,7 @@ import pandas as pd
 from tabulate import tabulate
 import csv
 
-from models.Converter import convert,getData
+from models.Converter import convert, getData
 from models.Extract import readHV
 from models.Statistics import Estadistica
 

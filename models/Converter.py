@@ -5,10 +5,13 @@ import numpy as np
 import easygui
 import pytesseract
 import difflib
+import random as rng
+import argparse
 
 from models import Contours
 from models.Contours import sort_contours
 from models.Extract import extract, readHV, createHeaders
+from models.SortCont import sortContours
 
 def convert():
     file = easygui.fileopenbox()
@@ -68,88 +71,62 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
     cv2.imwrite("img_final_bin.jpg",img_final_bin)
     # Find contours for image, which will detect all the boxes
     contours, hierarchy = cv2.findContours(img_final_bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
     # Sort all the contours by top to bottom.
-    (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
+    sortedBoxes = sortContours(contours)
+    # (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
     # boundingBoxes = sort_contours(contours, method="top-to-bottom")
     idx = 0
 
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     text = []
     groups = []
-    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2))
-    # for c in contours:
+    cont = 0
+    # pcoords = [0,0,0,0]
     coords = [0,0,0,0]
-    for c in contours:
+    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2))
+    for b in sortedBoxes:
     # Returns the location and width,height for every contour
-        x, y, w, h = cv2.boundingRect(c)
-        b = [x,y,w,h]
-        # x = b[0]
-        # y = b[1]
-        # w = b[2]
-        # h = b[3]
+        # x, y, w, h = cv2.boundingRect(c)
+        x = b[0]
+        y = b[1]
+        w = b[2]
+        h = b[3]
         # If the box height is greater then 20, widht is >80, then only save it as a box in "cropped/" folder.
-        if (w > 20 and h > 10) and w > 3*h:
+        if (w > 20 and h > 10 and h < 40) and w > 3*h:
             ncoords = b
             idx += 1
+            # print('-'*60)
+            # print(ncoords)
+            # print('-'*60)
             
             group = getCellGroup(coords,ncoords,resized)
-            groups.append(group)
-
-            new_img = resized[y-3:y+h+3, x-2:x+w]
+            if group != None:
+                cont += 1
+                if cont <= 2:
+                    groups.append(group)
+                elif cont > 2:
+                    cont = 0
+                # if cont == 2:
+                #     cont = 0
+            # new_img = resized[y-3:y+h+3, x-2:x+w]
             # cv2.imshow('image',new_img)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()            
-            # # gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
-            
-            blur = cv2.GaussianBlur(new_img,(3,3),0)
-            # cv2.imshow('blur',blur)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+            # # gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)            
 
-            tresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-            # cv2.imshow('tresh',tresh)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2)) # Operador morfol+ogico de apertura
-            openmorf = cv2.morphologyEx(tresh, cv2.MORPH_OPEN, kernel,iterations=1)
-            # cv2.imshow('open',openmorf)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()     
-
-            kernel = np.ones((1,1),np.uint8)
-            dilation = cv2.dilate(openmorf,kernel,iterations = 1)   
-            # cv2.imshow('dilat',dilation)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()            
-            
-            kernel = np.ones((1,2),np.uint8)
-            erosion = cv2.erode(dilation,kernel,iterations = 1)
-            # cv2.imshow('erode',erosion)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            median = cv2.medianBlur(erosion,1)      
-            
-            invert = 255 - median
-            # cv2.imshow('invert',invert)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()            
-
-            custom_config = r'--oem 3 --psm 6'
-            txt = pytesseract.image_to_string(invert,config= custom_config)
-            print(txt)
-
-            text.append(txt)
+            # text.append(txt)
             # cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
             coords = b
-    matx = []
-    for e in text:
-        mod1 = e.replace('\n','')
-        # print(mod1)
-        mod2 = mod1.replace('\x0c','')
-        # print(mod2)
-        matx.append(mod2)
+    print(groups)
+    matx = [g for g in groups if g]
+    print(matx)
+    # for e in text:
+    #     mod1 = e.replace('\n','')
+    #     # print(mod1)
+    #     mod2 = mod1.replace('\x0c','')
+    #     # print(mod2)
+    #     matx.append(mod2)
     
     return matx
             
@@ -167,32 +144,103 @@ def getData(refMatrix):
     createHeaders(headers,values)
 
 def getCellGroup(coords,ncoords,resized):
-    corner = coords[0]+coords[2] # Esquina superior izquierda de la celda anterior
-    lcorner = coords[1]+coords[3] # Esquina inferior izquierda de la celda anterior
-    ncorner = ncoords[1]+ncoords[3] # Esquina inferior izquierda de la nueva celda
-    if (ncoords[0] >= corner-170) and (ncoords[0] <= corner+170) and (ncorner>=lcorner-100) and (ncorner<=lcorner+100):
+    # print(coords)
+    # print(ncoords)
+    # pA = (pcoords[0],pcoords[1]) # Esquina superior izquierda de la celda anterior
+    # pB = (pcoords[0]+pcoords[2],pcoords[1]) # Esquina superior derecha de la celda anterior
+    # pC = (pcoords[0],pcoords[1]+pcoords[3]) # Esquina inferior izquierda de la celda anterior
+    # pD = (pcoords[0]+pcoords[2],pcoords[1]+pcoords[3]) # Esquina inferior derecha de la celda anterior
+
+    A = (coords[0],coords[1]) # Esquina superior izquierda de la celda anterior
+    B = (coords[0]+coords[2],coords[1]) # Esquina superior derecha de la celda anterior
+    C = (coords[0],coords[1]+coords[3]) # Esquina inferior izquierda de la celda anterior
+    D = (coords[0]+coords[2],coords[1]+coords[3]) # Esquina inferior derecha de la celda anterior
+
+    nA = (ncoords[0],ncoords[1]) # Esquina superior izquierda de la celda actual
+    nB = (ncoords[0]+ncoords[2],ncoords[1]) # Esquina superior derecha de la celda actual
+    nC = (ncoords[0],ncoords[1]+ncoords[3]) # Esquina inferior izquierda de la celda actual
+    nD = (ncoords[0]+ncoords[2],ncoords[1]+ncoords[3]) # Esquina inferior derecha de la celda actual
+    # print('B')
+    # print(B)
+    # print('nA')
+    # print(nA)
+    # print('D')
+    # print(D)
+    # print('nC')
+    # print(nC)
+    
+    if (B <= nA and D <= nC) and (A[1] >= nA[1]-25 and  A[1] <= nA[1]+25):
         group = [coords,ncoords]
+        print('GRUPO:')
         print(group)
         x1 = group[0][0] 
         y1 = group[0][1] 
         w1 = group[0][2] 
         h1 = group[0][3] 
         testimg1 = resized[y1-3:y1+h1+3, x1-2:x1+w1]
-        cv2.imshow('image',testimg1)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()    
+        # cv2.imshow('image',testimg1)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        tit = getText(testimg1) 
 
         x2 = group[1][0] 
         y2 = group[1][1] 
         w2 = group[1][2] 
         h2 = group[1][3] 
-        testimg1 = resized[y2-3:y2+h2+3, x2-2:x2+w2]
-        cv2.imshow('image',testimg1)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()            
+        testimg2 = resized[y2-3:y2+h2+3, x2-2:x2+w2]
+        # cv2.imshow('image',testimg1)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()     
+        val = getText(testimg2) 
 
-
+        g = (tit,val)
+        return g
         #agrupo coords y ncoords
+        
+
+def getText(new_img):
+    blur = cv2.GaussianBlur(new_img,(3,3),0)
+    # cv2.imshow('blur',blur)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    tresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+    # cv2.imshow('tresh',tresh)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2)) # Operador morfol+ogico de apertura
+    openmorf = cv2.morphologyEx(tresh, cv2.MORPH_OPEN, kernel,iterations=1)
+    # cv2.imshow('open',openmorf)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()     
+
+    kernel = np.ones((1,1),np.uint8)
+    dilation = cv2.dilate(openmorf,kernel,iterations = 1)   
+    # cv2.imshow('dilat',dilation)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()            
+
+    kernel = np.ones((1,2),np.uint8)
+    erosion = cv2.erode(dilation,kernel,iterations = 1)
+    # cv2.imshow('erode',erosion)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    median = cv2.medianBlur(erosion,1)      
+
+    invert = 255 - median
+    # cv2.imshow('invert',invert)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()            
+
+    custom_config = r'--oem 3 --psm 6'
+    txt = pytesseract.image_to_string(invert,config= custom_config)
+    mod1 = txt.replace('\n','')
+    # print(mod1)
+    txt = mod1.replace('\x0c','')
+    print(txt)
+    return txt  
 
 
     
