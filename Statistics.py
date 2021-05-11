@@ -17,10 +17,7 @@ class Estadistica():
         file.close()
         df = pd.read_csv(datos)
         nume=df.to_numpy()
-        valores = [nume[0][0],nume[0][1],nume[0][2]]
-        headers = ['En mantenimiento','Disponibles','Fuera de Servicio']
-        estGen = [headers,valores]
-        # mantenimiento, disponibles, fuera de servicio
+        turistas = [nume[0][0],nume[0][1],nume[0][2]]
         """
         paises = ['Mantenimiento: '+ str(turistas[0]), 'Disponibles: '+ str(turistas[1]), 'Fuera de servicio: ' + str(turistas[2])]
         explode = [0.1, 0, 0]  # Destacar algunos
@@ -29,7 +26,7 @@ class Estadistica():
         plt.title('Estado de los equipos del hospital')
         plt.show()
         """
-        return estGen
+        return turistas
 
     def ind(self,numer):
         directorio = os.path.dirname(__file__)

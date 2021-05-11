@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Login</title>
+    <script> 
+        function ingreso(){
+            // alert("Funcion de login")
+            doc = document.getElementById("doc").value;
+            pass = document.getElementById("pw").value;
+            if (doc == "" || pass == ""){
+                alert("Llene todos los campos")
+            } else{
+                window.open('/guardar','_parent')
+                document.getElementById("login").submit();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="login--box">
+        <form id= "login" class="login--container" action="/guardar" method='POST'>
+            <h3>No. documento:</h3>
+            <input class="login--input" type="text" name="doc" id="doc">
+            <h3>Contraseña:</h3>
+            <input class="login--input" type="password" name="pw" id="pw">
+            <input class="button" type="button" value="Ingresar" onclick="ingreso()">
+            <p class="login--subtitle">¿Aún no tienes cuenta? <a href="/registro" class="login--a">Regístrate</a> </p>
+        </form>
+    </div>
+</body>
+</html>

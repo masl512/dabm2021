@@ -11,8 +11,9 @@ class HojaDeVida():
     def __init__(self): 
         self._file = r"..\data\HDV.csv"
 
-    def create(self):
-        refMat = convert()
+    def create(self,filename):
+        print("ENTRÓ A CREATE")
+        refMat = convert(filename)
         print("MATRIZ DE REFERENCIA SIN MODIFICAR")
         print(refMat)
         getData(refMat)

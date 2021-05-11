@@ -140,7 +140,7 @@ def equipos():
         elif opt == "4":
             HDV_equipo()
         elif opt == "5":
-            disp.verEquipos()
+            df = disp.verEquipos()
             print("-"*50)
             print("Ingrese cualquier valor para salir")
             input(">>")

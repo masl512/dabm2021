@@ -1,0 +1,200 @@
+html{
+    font-size: 62.5%;
+    box-sizing: border-box;    
+    scroll-snap-type: y mandatory;
+    height: 100%;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+  }
+body{
+    font-size: 16px;
+    font-family: 'Cabin', sans-serif;
+    background-image: linear-gradient(to top, #88e7ff 0%,white 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: auto;
+}
+a{
+    text-decoration: none;
+}
+h1{
+    color: gray;
+}
+/* LOGIN */
+.login--box{
+    margin-top: 5rem ;
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+}
+.login--container{
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #03989e;
+    padding: 5rem;
+    border-radius: 2rem;
+    color: white;
+    border: none;
+}
+.login--input{
+    border: 0.1rem solid #757575;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+.button{
+    width: auto;
+    border-radius: 0.8rem;
+    padding: 0.7rem;
+    border: none;
+    -webkit-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    background-color:  #005AD1;
+    margin: 3rem;
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: white;   
+}
+.login--subtitle{
+    text-align: center;
+}
+.login--a{
+    text-decoration: none;
+    font-family: 'Cabin', sans-serif;
+    font-weight: 400;
+    color: #57ffcd;
+    cursor: pointer;
+}
+/* MAIN MENU */
+.menu--box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-height: auto;
+}
+.menu--container{
+    margin-top: 8rem;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    column-gap: 3rem;
+}
+.menu--opt{
+    text-align: center;
+    padding: 4rem 7rem;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+.menu--opt.opt1 {
+    background-color: rgba(3, 152, 158, 0.8);
+}
+.menu--opt.opt2 {
+    background-color: rgba(242, 87, 77, 0.8);
+}
+.menu--opt.opt3 {
+    background-color: rgba(77, 192, 131, 0.8);
+}
+/* REGISTRO */
+.reg--box{
+    display: flex;
+    justify-content: center;
+    /* max-height: auto; */
+}
+.reg--container{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #03989e;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    /* padding: 5rem; */
+    border-radius: 2rem;
+    color: white;
+    border: none;
+}
+.reg--input{
+    border: 0.1rem solid #757575;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+.reg--subtitle{
+    text-align: center;
+}
+.graph{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.user--box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    max-width: 50%;
+}
+.user--container{
+    text-align: left;
+    width: 100%;
+    padding: 2rem 5rem;
+    border-radius: 2rem;
+    background-color: #03989e;
+    color: white;
+}
+.user--container p {
+    text-align: center;
+}
+.button--edit{
+    width: auto;
+    border-radius: 0.8rem;
+    padding: 1rem 5rem;
+    border: none;
+    -webkit-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    background-color:  #005AD1;
+    margin: 1rem 2rem;
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: white;   
+}
+.btn-group{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.v-btn-group{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}
+/* INVENTARIO */
+.inv--container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* TABLA */
+.table--row:nth-child(even){
+    background-color: #e5e5e5;
+}
+.table--header{
+    background-color: #03989e;
+    color: white;
+    text-align: center;
+}
+.table--cell{
+    padding: 10px;
+}
+.inv--table{
+    margin: auto 150px;
+}

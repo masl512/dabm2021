@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Menú Principal</title>
+</head>
+<body>
+    <div class="menu--box">
+        <h1>Menú Principal</h1>
+        <!-- <p>{{user}}</p> -->
+        <p>¡Hola {{user[0][0]}}! Selecciona una opción:</p>
+        <div class="menu--container">
+            <a onclick="window.open('/inventario','_self')">
+            <div class="menu--opt opt1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list-check" width="88" height="88" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3.5 5.5l1.5 1.5l2.5 -2.5" />
+                        <path d="M3.5 11.5l1.5 1.5l2.5 -2.5" />
+                        <path d="M3.5 17.5l1.5 1.5l2.5 -2.5" />
+                        <line x1="11" y1="6" x2="20" y2="6" />
+                        <line x1="11" y1="12" x2="20" y2="12" />
+                        <line x1="11" y1="18" x2="20" y2="18" />
+                    </svg>
+                    <p>Ver Inventario</p>
+                </div>
+            </a>
+            <a onclick="window.open('/estadisticas','_self')">
+                <div class="menu--opt opt2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-donut-3" width="88" height="88" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 3v5m4 4h5" />
+                    <path d="M8.929 14.582l-3.429 2.918" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="12" cy="12" r="9" />
+                </svg>
+                <p>Estadísticas</p>
+                </div>
+            </a>
+            <a onclick="window.open('/user','_self')">                
+                <div class="menu--opt opt3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="88" height="88" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                    </svg>
+                    <p>Mi Perfil</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -115,6 +115,9 @@ class Equipo():
         datos=os.path.join(directorio,archivo)
         df = pd.read_csv(datos)
         print(df)
+        headers = df.columns.values.tolist()
+        values = df.values.tolist()
+        return (headers,values)
         # print(tabulate(df,headers='keys',tablefmt="github"))
 
 

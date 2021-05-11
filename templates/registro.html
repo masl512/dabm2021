@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Registro</title>
+    <script> 
+        function ingreso(){
+            // alert("Funcion de login")
+            doc = document.getElementById("doc").value;
+            pass = document.getElementById("pw").value;
+            if (doc == "" || pass == ""){
+                alert("Llene todos los campos")
+            }
+
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <div class="reg--box">
+            <form class="reg--container" action="/registrar" method="POST">
+            <h3>Nombre completo</h3>
+            <input class="reg--input" type="text" name="name" id="name">
+            <h3>No. documento:</h3>
+            <input class="reg--input" type="tel" name="doc" id="doc">
+            <h3>Cargo:</h3>
+            <input class="reg--input" type="text" name="cargo" id="cargo">
+            <h3>Celular:</h3>
+            <input class="reg--input" type="tel" name="cel" id="cel">
+            <h3>Contraseña:</h3>
+            <input class="reg--input" type="password" name="pw" id="pw">
+            <input class="button" type="submit" value="Registrarme" onclick="ingreso()">
+        </form>
+        </div>
+    </div>
+</body>
+</html>

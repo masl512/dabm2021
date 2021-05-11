@@ -13,10 +13,14 @@ from models.Contours import sort_contours
 from models.Extract import extract, readHV, createHeaders
 from models.SortCont import sortContours
 
-def convert():
-    file = easygui.fileopenbox()
+def convert(filename):
+    print("ENTRÓ A CONVERT")
+    # file = easygui.fileopenbox()
     # files = filedialog.askopenfilenames()
     directory = os.path.dirname(__file__)
+    print(directory)
+    file = os.path.join(directory,filename)
+    print(file)
     # directory = r'C:\Users\USUARIO\Documents\UNIVERSIDAD\DABM\Proyecto\data'
     texto = box_extraction(file,directory)
     # disp = Equipo(name,code,rs,brand,model,tipo,series,numAct)
@@ -75,7 +79,6 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
     # Sort all the contours by top to bottom.
     sortedBoxes = sortContours(contours)
     # (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
-    # boundingBoxes = sort_contours(contours, method="top-to-bottom")
     idx = 0
 
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -84,6 +87,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
     cont = 0
     # pcoords = [0,0,0,0]
     coords = [0,0,0,0]
+    dic = {'No DE ACTIVO':'','FECHA DE INSTALACION':'','MANTENIMIENTO':'','RIESGO':'','CLASIFICACION':'','USO':''}
     # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,2))
     for b in sortedBoxes:
     # Returns the location and width,height for every contour
@@ -92,7 +96,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
         y = b[1]
         w = b[2]
         h = b[3]
-        # If the box height is greater then 20, widht is >80, then only save it as a box in "cropped/" folder.
+        # If the box height is greater than 20, widht is >80, then only save it as a box in "cropped/" folder.
         if (w > 20 and h > 10 and h < 40) and w > 3*h:
             ncoords = b
             idx += 1
@@ -102,36 +106,15 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
             
             group = getCellGroup(coords,ncoords,resized)
             if group != None:
-                cont += 1
-                if cont <= 2:
-                    groups.append(group)
-                elif cont > 2:
-                    cont = 0
-                # if cont == 2:
-                #     cont = 0
-            # new_img = resized[y-3:y+h+3, x-2:x+w]
-            # cv2.imshow('image',new_img)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()            
-            # # gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)            
-
-            # text.append(txt)
+                groups.append(group)
             # cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
             coords = b
     print(groups)
-    matx = [g for g in groups if g]
+    matx = [g for g in groups if g[0].isupper()]
     print(matx)
-    # for e in text:
-    #     mod1 = e.replace('\n','')
-    #     # print(mod1)
-    #     mod2 = mod1.replace('\x0c','')
-    #     # print(mod2)
-    #     matx.append(mod2)
     
     return matx
             
-
-    # # box_extraction("41.jpg", "./Cropped/")
 
 def get_matches(matrix,refTitle):
     match = difflib.get_close_matches(refTitle,matrix)
@@ -146,10 +129,6 @@ def getData(refMatrix):
 def getCellGroup(coords,ncoords,resized):
     # print(coords)
     # print(ncoords)
-    # pA = (pcoords[0],pcoords[1]) # Esquina superior izquierda de la celda anterior
-    # pB = (pcoords[0]+pcoords[2],pcoords[1]) # Esquina superior derecha de la celda anterior
-    # pC = (pcoords[0],pcoords[1]+pcoords[3]) # Esquina inferior izquierda de la celda anterior
-    # pD = (pcoords[0]+pcoords[2],pcoords[1]+pcoords[3]) # Esquina inferior derecha de la celda anterior
 
     A = (coords[0],coords[1]) # Esquina superior izquierda de la celda anterior
     B = (coords[0]+coords[2],coords[1]) # Esquina superior derecha de la celda anterior
@@ -195,7 +174,7 @@ def getCellGroup(coords,ncoords,resized):
 
         g = (tit,val)
         return g
-        #agrupo coords y ncoords
+        #agrupo coords del titulo y coords del valor
         
 
 def getText(new_img):

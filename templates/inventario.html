@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Inventario</title>
+</head>
+<body>
+    <div class="inv--container">
+        <h1>Inventario de Equipos</h1>
+        <table class="inv--table">
+            <tr class="table--header">
+                {% for header in equipos[0] %}
+                <th class="table--cell">{{header}}</th>
+                {% endfor %}
+            </tr>
+            {% for row in equipos[1]%}
+            <tr class="table--row">
+                {% for cell in row %}
+                <td class="table--cell">{{cell}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <h3>Opciones:</h3>
+        <div class="v-btn-group">
+            <input class="button--edit" type="button" value="Crear Equipo" onclick="window.open('')">
+            <input class="button--edit" type="button" value="Eliminar Equipo" onclick="window.open('')">
+            <input class="button--edit" type="button" value="Hojas de Vida" onclick="window.open('/upload')">
+            <input class="button--edit" type="button" value="Editar" onclick="window.open('/editEquipo')">
+        </div>
+        <div class="btn-group">
+            <input class="button--edit" type="button" value="Volver" onclick="window.history.go(-1); return false;">
+        </div>
+    </div>
+</body>
+</html>
