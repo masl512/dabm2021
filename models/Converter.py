@@ -19,7 +19,8 @@ def convert(filename):
     # files = filedialog.askopenfilenames()
     directory = os.path.dirname(__file__)
     print(directory)
-    file = os.path.join(directory,filename)
+    # file = os.path.join(directory,filename)
+    file = os.path.join(filename)
     print(file)
     # directory = r'C:\Users\USUARIO\Documents\UNIVERSIDAD\DABM\Proyecto\data'
     texto = box_extraction(file,directory)

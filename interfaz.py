@@ -22,6 +22,8 @@ disp = Equipo('','','','','','','','')
 
 app = Flask(__name__)
 
+os.makedirs(os.path.join(app.instance_path, 'htmlfi'), exist_ok=True)
+
 def ingresar(cedula,password):
     global navegante
     global nav
@@ -119,8 +121,10 @@ def upload_file():
 def uploader_file():
    if request.method == 'POST':
       f = request.files['file']
-      f.save(secure_filename(f.filename))
-      name = secure_filename(f.filename)
+      name = os.path.join(app.instance_path, 'htmlfi', secure_filename(f.filename))
+      f.save(name)
+    #   f.save(secure_filename(f.filename))
+    #   name = secure_filename(f.filename)
       print("-"*60)
       print(name)
       HojaDeVida().create(str(name))
