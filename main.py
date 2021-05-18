@@ -1,3 +1,4 @@
+import re
 from flask import Flask
 from flask import render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -18,7 +19,9 @@ global user
 u1=''
 navegante=''
 nav=''
-disp = Equipo('','','','','','','','')
+disp = Equipo('','','','','','','','','')
+user = Usuario('','','','','')
+
 
 app = Flask(__name__)
 
@@ -49,6 +52,20 @@ def extraccionedit():
     dat_edit=a.to_numpy()
     return dat_edit
 
+def updateGeneral():
+    global disp
+    h,v = disp.verEquipos()
+    mant = [fila for fila in v if fila[8]=='mantenimiento']
+    dispo = [e for e in v if e[8]=='disponible']
+    fuera = [e for e in v if e[8]=='fuera de servicio']
+    data = [[len(mant),len(dispo),len(fuera)]]
+    df = pd.DataFrame(data)
+    print(df)
+    directorio=os.path.dirname(__file__)
+    archivo='general.csv'
+    datos=os.path.join(directorio,'models',archivo)
+    df.to_csv(datos, index=None, mode="w", header=["mantenimiento","disponibles","fuera de servicio"])
+
 
 @app.route('/')
 def inicio():
@@ -65,6 +82,7 @@ def menu_principal():
 @app.route('/inventario')
 def inventario():
     df = disp.verEquipos()
+    updateGeneral()
     # print(df)
     return render_template('inventario.html',equipos=df)
 
@@ -91,7 +109,8 @@ def editEquipo():
             n_tipo = df.at[idx,'Tipo']
             n_series = df.at[idx,'Serial']
             n_activo = df.at[idx,'NumAct']
-            dispSel = [n_name,n_code,n_rs,n_brand,n_model,n_tipo,n_series,n_activo]
+            n_estado = df.at[idx,'Estado']
+            dispSel = [n_name,n_code,n_rs,n_brand,n_model,n_tipo,n_series,n_activo,n_estado]
             return render_template('editEquipo.html',dispSel = dispSel)
         return redirect(url_for('inventario'))
 
@@ -108,6 +127,7 @@ def eliminar():
 
 @app.route('/estadisticas') 
 def estadisticas():
+    updateGeneral()
     _file=r"general.csv"
     estd=Estadistica(_file)
     datosGen=estd.general()
@@ -178,16 +198,19 @@ def registrar():
 def creareq():
     if request.method == 'POST':
         name = request.form['name']
-        code = request.form['code']
+        print(name)
+        code = request.form['cod']
         rs = request.form['rs']
         brand = request.form['brand']
         model = request.form['model']
-        tipo = request.form['tipo']
-        series = request.form['series']
+        tipo = request.form['type']
+        series = request.form['serial']
         numAct = request.form['numAct']
-        disp = Equipo(name,code,rs,brand,model,tipo,series,numAct)
-        disp.create()
-        return redirect(url_for("inicio"))
+        estado = request.form['estado']
+        dis = Equipo(name,code,rs,brand,model,tipo,series,numAct,estado)
+        # disp = Equipo()
+        dis.create()
+        return redirect(url_for("inventario"))
     return "Registro no permitido"
 
 
@@ -203,11 +226,11 @@ def perfil_usu():
     return render_template("perfil_usu.html", titulo="Perfil del usuario", datos=navegante)
 
 
-@app.route('/Equipo') #esta funcion diseñarla con desplegable
-def Equipo():
-    global disp
-    disp = Equipo('','','','','','','','')
-    return render_template('Equipo.html', titulo="Equipo")
+# @app.route('/Equipo') #esta funcion diseñarla con desplegable
+# def Equipo():
+#     global disp
+#     disp = Equipo('','','','','','','','')
+#     return render_template('Equipo.html', titulo="Equipo")
 
 @app.route('/log', methods=['GET', 'POST'])
 def log():
@@ -272,19 +295,29 @@ def getEdit():
         tipo = request.form.get("tipo")
         series = request.form.get("series")
         numAct = request.form.get("numAct")
-        cambios = [nombre,cod,rs,brand,model,tipo,series,numAct]
+        estado = request.form.get("estado")
+        cambios = [nombre,cod,rs,brand,model,tipo,series,numAct,estado]
         disp.editEq(cambios,numAct)
         return redirect(url_for("inventario"))
 
+@app.route('/editUser') 
+def editUser():
+    return render_template('editUser.html',user = navegante)
+
+@app.route('/getEditUser',methods=['POST'])
+def getEditUser():
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        cedula = request.form.get("cedula")
+        cargo = request.form.get("cargo")
+        cel = request.form.get("contact")
+        pw = request.form.get("pw")
+        pw = pw.strip('"')
         
-         
-
-
-
-
-
-
-
+        cambios = [nombre,cedula,cargo,cel,pw]
+        user.editUser(cambios,cedula)
+        return redirect(url_for("usuario"))
+  
 
 
 ###

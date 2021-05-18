@@ -1,12 +1,12 @@
 import os
 import cv2
-import csv
+# import csv
 import numpy as np
-import easygui
+# import easygui
 import pytesseract
 import difflib
-import random as rng
-import argparse
+# import random as rng
+# import argparse
 
 from models import Contours
 from models.Contours import sort_contours
@@ -14,13 +14,14 @@ from models.Extract import extract, readHV, createHeaders
 from models.SortCont import sortContours
 
 def convert(filename):
+    directory = r'instance/htmlfi'
     print("ENTRÓ A CONVERT")
     # file = easygui.fileopenbox()
     # files = filedialog.askopenfilenames()
-    directory = os.path.dirname(__file__)
+    # directory = os.path.dirname(__file__)
     print(directory)
     # file = os.path.join(directory,filename)
-    file = os.path.join(filename)
+    file = os.path.join(directory,filename)
     print(file)
     # directory = r'C:\Users\USUARIO\Documents\UNIVERSIDAD\DABM\Proyecto\data'
     texto = box_extraction(file,directory)
@@ -82,7 +83,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
     # (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
     idx = 0
 
-    pytesseract.pytesseract.tesseract_cmd = r'/app/.apt/usr/bin/tesseract'
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     text = []
     groups = []
     cont = 0
@@ -110,9 +111,9 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
                 groups.append(group)
             # cv2.imwrite(cropped_dir_path+str(idx) + '.png', invert)
             coords = b
-    print(groups)
+    # print(groups)
     matx = [g for g in groups if g[0].isupper()]
-    print(matx)
+    # print(matx)
     
     return matx
             
@@ -151,8 +152,8 @@ def getCellGroup(coords,ncoords,resized):
     
     if (B <= nA and D <= nC) and (A[1] >= nA[1]-25 and  A[1] <= nA[1]+25):
         group = [coords,ncoords]
-        print('GRUPO:')
-        print(group)
+        # print('GRUPO:')
+        # print(group)
         x1 = group[0][0] 
         y1 = group[0][1] 
         w1 = group[0][2] 
@@ -216,10 +217,11 @@ def getText(new_img):
 
     custom_config = r'--oem 3 --psm 6'
     txt = pytesseract.image_to_string(invert,config= custom_config)
+    # txt = pytesseract.image_to_string(invert)
     mod1 = txt.replace('\n','')
     # print(mod1)
     txt = mod1.replace('\x0c','')
-    print(txt)
+    # print(txt)
     return txt  
 
 

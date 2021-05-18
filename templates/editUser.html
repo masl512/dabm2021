@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Editar Usuario</title>
+</head>
+<body>
+    <h1>Editor de Usuario</h1>
+    <div class="reg--box">
+        <div class="reg--container">
+            <form class="form" action="/getEditUser" method="post">
+                <p>Nombre:</p>
+                <input type="text" name="nombre" id="nombre" value="{{user[0][0]}}">
+                <p>Cédula:</p>
+                <input type="text" name="cedula" id="cedula" value="{{user[0][1]}}">
+                <p>Cargo:</p>
+                <input type="text" name="cargo" id="cargo" value="{{user[0][2]}}">
+                <p>Celular:</p>
+                <input type="text" name="contact" id="contact" value="{{user[0][3]}}">
+                <p>Contraseña:</p>
+                <input type="password" name="pw" id="pw" value="{{user[0][4]}}">
+                <input class="button--edit" type="submit" value="Guardar">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

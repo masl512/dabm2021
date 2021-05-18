@@ -21,14 +21,6 @@ class Estadistica():
         headers = ['En mantenimiento','Disponibles','Fuera de Servicio']
         estGen = [headers,valores]
         # mantenimiento, disponibles, fuera de servicio
-        """
-        paises = ['Mantenimiento: '+ str(turistas[0]), 'Disponibles: '+ str(turistas[1]), 'Fuera de servicio: ' + str(turistas[2])]
-        explode = [0.1, 0, 0]  # Destacar algunos
-        plt.pie(turistas, labels=paises, explode=explode,
-                autopct='%1.1f%%', shadow=True, startangle=90)
-        plt.title('Estado de los equipos del hospital')
-        plt.show()
-        """
         return estGen
 
     def ind(self,numer):
@@ -58,10 +50,14 @@ class Estadistica():
         turi = [remaining_days,rest]
         paises = ['Días restantes: '+ str(turi[0]), 'Dias abarcados: '+ str(turi[1])]
         explode = [0, 0]  # Destacar algunos
-        """
-        plt.pie(turi, labels=paises, explode=explode,
-                autopct='%1.1f%%', shadow=True, startangle=90)
-        plt.title('Tiempo hasta el proximo matenimiento')
-        plt.show()
-        """
         return num,turi
+    
+    def addIndividual(self):
+        directorio = os.path.dirname(__file__)
+        archivoUsuarios=os.path.join(directorio,self._file)
+        if os.stat(archivoUsuarios).st_size == 0:
+            columnas =pd.DataFrame([["n_act","fecha","mantenimiento","riesgo"]])
+            columnas.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))
+        data1 = [[self.n_act,self.fecha,self.mantenimiento,self.riesgo]]
+        df1 = pd.DataFrame(data1)
+        df1.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))

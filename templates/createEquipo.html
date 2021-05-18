@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Crear Equipo</title>
+</head>
+<body>
+    <div>
+        <div class="reg--box">
+            <form class="reg--container" action="/creareq" method="POST">
+            <h3>Nombre del equipo</h3>
+            <input class="reg--input" type="text" name="name" id="name">
+            <h3>Código del equipo:</h3>
+            <input class="reg--input" type="text" name="cod" id="cod">
+            <h3>Registro Sanitario:</h3>
+            <input class="reg--input" type="text" name="rs" id="rs">
+            <h3>Marca:</h3>
+            <input class="reg--input" type="text" name="brand" id="brand">
+            <h3>Modelo:</h3>
+            <input class="reg--input" type="text" name="model" id="model">
+            <h3>Tipo:</h3>
+            <input class="reg--input" type="text" name="type" id="type">
+            <h3>Serial:</h3>
+            <input class="reg--input" type="text" name="serial" id="serial">
+            <h3>Estado::</h3>
+            <select name="estado" id="estado">
+                <option value="0" selected>->Elija una opción<-</option>
+                <option value="disponible">Disponible</option>
+                <option value="mantenimiento">En Mantenimiento</option>
+                <option value="fuera de servicio">Fuera de servicio</option>
+            </select>
+            <h3>Número de Activo:</h3>
+            <input class="reg--input" type="text" name="numAct" id="numAct">
+            <input class="button" type="submit" value="Crear">
+        </form>
+        </div>
+    </div>
+</body>
+</html>

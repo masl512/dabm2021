@@ -4,7 +4,7 @@ import tabulate
 
 class Equipo():
     _file = r"..\data\dispositivos.csv"
-    def __init__(self,name,code,rs,brand,model,tipo,series,numAct):
+    def __init__(self,name,code,rs,brand,model,tipo,series,numAct,estado):
         self.name = name
         self.code = code
         self.rs = rs
@@ -13,14 +13,15 @@ class Equipo():
         self.tipo = tipo
         self.series = series
         self.numAct = numAct
+        self.estado = estado
     
     def create(self):
         directorio = os.path.dirname(__file__)
         archivoUsuarios=os.path.join(directorio,self._file)
         if os.stat(archivoUsuarios).st_size == 0:
-            columnas =pd.DataFrame([["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"]])
+            columnas =pd.DataFrame([["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct","Estado"]])
             columnas.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))
-        data1 = [[self.name,self.code,self.rs,self.brand,self.model,self.tipo,self.series,self.numAct]]
+        data1 = [[self.name,self.code,self.rs,self.brand,self.model,self.tipo,self.series,self.numAct,self.estado]]
         df1 = pd.DataFrame(data1)
         df1.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))
     
@@ -75,7 +76,7 @@ class Equipo():
             n_activo = input("Ingrese el nuevo número de activo >>")
             df.at[idx,'NumAct'] = n_activo+"\n"     
         
-        df.to_csv(datos, index=None, mode="w", header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"])
+        df.to_csv(datos, index=None, mode="w", header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct","Estado"])
 
     def erase(self,num):
         df,indx,path = self.selDisp(num)
@@ -83,7 +84,7 @@ class Equipo():
         print(indx)
         df.drop([indx[0]],inplace= True)
         print(df)
-        df.to_csv(path, index=None, mode="w",header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"])
+        df.to_csv(path, index=None, mode="w",header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct","Estado"])
 
     def verEquipos(self):
         directorio=os.path.dirname(__file__)
@@ -105,8 +106,9 @@ class Equipo():
         df.at[idx,'Modelo'] = cambios[4]
         df.at[idx,'Tipo'] = cambios[5]
         df.at[idx,'Serial'] = cambios[6]
-        df.at[idx,'NumAct'] = cambios[7]+"\n"     
-        df.to_csv(datos, index=None, mode="w", header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"])
+        df.at[idx,'NumAct'] = cambios[7]    
+        df.at[idx,'Estado'] = cambios[8]    
+        df.to_csv(datos, index=None, mode="w", header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct","Estado"])
 
 
 

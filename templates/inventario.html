@@ -39,18 +39,16 @@
             <script>
                 var form = document.getElementById('numActForm');
                 function editEq(){
-                    console.log('ENTRA A EDIT')
                     form.action = "/editEquipo";
                     form.submit();
                 }
                 function eraseEq(){
-                    console.log('ENTRA A ERASE')
                     form.action = "/eliminar";
                     form.submit();
                 }
             </script>
         <div class="v-btn-group">
-            <input class="button--edit" type="button" value="Crear Equipo" onclick="window.open('')">
+            <input class="button--edit" type="button" value="Crear Equipo" onclick="window.open('/createEquipo','_self')">
             <input class="button--edit" type="button" value="Hojas de Vida" onclick="window.open('/upload')">
         </div>
         <div class="btn-group">
