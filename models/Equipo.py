@@ -95,6 +95,18 @@ class Equipo():
         values = df.values.tolist()
         return (headers,values)
         # print(tabulate(df,headers='keys',tablefmt="github"))
+    
+    def editEq(self,cambios,num):
+        df , idx , datos = self.selDisp(num)
+        df.at[idx,'Nombre'] = cambios[0]
+        df.at[idx,'Cod'] = cambios[1]
+        df.at[idx,'RegSan'] = cambios[2]
+        df.at[idx,'Marca'] = cambios[3]
+        df.at[idx,'Modelo'] = cambios[4]
+        df.at[idx,'Tipo'] = cambios[5]
+        df.at[idx,'Serial'] = cambios[6]
+        df.at[idx,'NumAct'] = cambios[7]+"\n"     
+        df.to_csv(datos, index=None, mode="w", header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"])
 
 
 

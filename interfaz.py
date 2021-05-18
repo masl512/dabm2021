@@ -256,6 +256,25 @@ def editor():
             disp.edit(numAct)
     return render_template("Equipo.html")
 
+@app.route('/getEdit',methods=['POST'])
+def getEdit():
+    global disp
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        cod = request.form.get("cod")
+        rs = request.form.get("rs")
+        brand = request.form.get("brand")
+        model = request.form.get("model")
+        tipo = request.form.get("tipo")
+        series = request.form.get("series")
+        numAct = request.form.get("numAct")
+        cambios = [nombre,cod,rs,brand,model,tipo,series,numAct]
+        disp.editEq(cambios,numAct)
+        return redirect(url_for("inventario"))
+
+        
+         
+
 
 
 
