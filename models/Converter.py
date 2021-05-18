@@ -81,7 +81,7 @@ def box_extraction(img_for_box_extraction_path, cropped_dir_path):
     # (contours, boundingBoxes) = sort_contours(contours, method="top-to-bottom")
     idx = 0
 
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = r'/app/.apt/usr/bin/tesseract'
     text = []
     groups = []
     cont = 0
