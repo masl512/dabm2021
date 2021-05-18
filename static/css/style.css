@@ -1,8 +1,8 @@
 html{
-    font-size: 62.5%;
-    box-sizing: border-box;    
-    scroll-snap-type: y mandatory;
     height: 100%;
+    font-size: 62.5%;
+    box-sizing: border-box;
+    /* scroll-snap-type: y mandatory; */
 }
 *, *:before, *:after {
     box-sizing: inherit;
@@ -13,13 +13,18 @@ body{
     background-image: linear-gradient(to top, #88e7ff 0%,white 100%);
     background-repeat: no-repeat;
     background-size: cover;
-    height: auto;
+    max-height: 100vh;
+    padding: 0;
 }
 a{
     text-decoration: none;
 }
 h1{
+    text-align: center;
     color: gray;
+}
+input{
+   text-align:center;
 }
 /* LOGIN */
 .login--box{
@@ -43,6 +48,7 @@ h1{
     border: 0.1rem solid #757575;
     border-radius: 1rem;
     padding: 1rem;
+    font-family: 'Cabin', sans-serif;
 }
 .button{
     width: auto;
@@ -105,7 +111,7 @@ h1{
 .reg--box{
     display: flex;
     justify-content: center;
-    /* max-height: auto; */
+    max-height: auto;
 }
 .reg--container{
     width: 50%;
@@ -197,4 +203,20 @@ h1{
 }
 .inv--table{
     margin: auto 150px;
+}
+.formulario{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
+.v-btn-group.reg--container{
+    padding: 1rem;
+    row-gap: 1rem;
+}
+.v-btn-group.reg--container input{
+    border: 0.1rem solid #757575;
+    border-radius: 1rem;
+    padding: 1rem;
+    font-family: 'Cabin', sans-serif;
 }

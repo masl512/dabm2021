@@ -14,6 +14,7 @@ global u1
 global navegante
 global nav
 global disp
+global user
 u1=''
 navegante=''
 nav=''
@@ -36,6 +37,17 @@ def ingresar(cedula,password):
         val=False
     return val
 
+def extraccionedit():
+    _file = r"..\data\dispositivos.csv"
+    directorio=os.path.dirname(__file__)
+    archivo=_file
+    datos=os.path.join(directorio,archivo)
+    df = pd.read_csv(datos)
+    a=df.loc[:,'NumAct']
+    dat_edit=a.to_numpy()
+    return dat_edit
+
+
 @app.route('/')
 def inicio():
     return render_template('index.html')
@@ -56,11 +68,41 @@ def inventario():
 
 @app.route('/createEquipo') 
 def createEquipo():
-    return render_template('createEquipo.html', titulo="Crear Equipo")
+    return render_template('createEquipo.html')
 
-@app.route('/editEquipo') 
+@app.route('/editEquipo', methods=['POST']) 
 def editEquipo():
-    return render_template('editEquipo.html', titulo="Crear Equipo")
+    global disp
+    if request.method == "POST":
+        numAct = str(request.form.get("numAct"))
+        print('Número de Activo')
+        print(numAct)
+        df , idx , datos = disp.selDisp(numAct)
+        print(idx)
+        if not idx.empty:
+            idx = idx[0]
+            n_name = df.at[idx,'Nombre']
+            n_code = df.at[idx,'Cod']
+            n_rs = df.at[idx,'RegSan']
+            n_brand = df.at[idx,'Marca']
+            n_model = df.at[idx,'Modelo']
+            n_tipo = df.at[idx,'Tipo']
+            n_series = df.at[idx,'Serial']
+            n_activo = df.at[idx,'NumAct']
+            dispSel = [n_name,n_code,n_rs,n_brand,n_model,n_tipo,n_series,n_activo]
+            return render_template('editEquipo.html',dispSel = dispSel)
+        return redirect(url_for('inventario'))
+
+@app.route('/eliminar', methods=['POST'])
+def eliminar():
+    global disp
+    if request.method == "POST":
+        numAct = str(request.form.get("numAct"))
+        print('Número de Activo')
+        print(numAct)
+        if numAct!=None:
+            disp.erase(numAct)
+    return redirect(url_for('inventario'))
 
 @app.route('/estadisticas') 
 def estadisticas():
@@ -100,13 +142,14 @@ def login():
             return render_template("estadisticas.html", datosT = data[0], datosT1 = data[1])
     return render_template("estadisticas.html") 
 
-@app.route('/guardar', methods=['POST'])
+@app.route('/guardar', methods=["POST"])
 def guardar():
     if request.method == 'POST':
         doc = request.form['doc']
         passw = request.form['pw']
         if doc and passw:
             bandera=ingresar(doc,passw)
+            print(bandera)
             if bandera:
                 return redirect(url_for("menu_principal"))
         else:
@@ -129,7 +172,6 @@ def registrar():
 
 @app.route('/creareq', methods=["POST"])
 def creareq():
-    global disp
     if request.method == 'POST':
         name = request.form['name']
         code = request.form['code']
@@ -144,13 +186,86 @@ def creareq():
         return redirect(url_for("inicio"))
     return "Registro no permitido"
 
-@app.route('/editeq',methods=["POST"])
-def editeq():
-    disp.edit(numAct)
 
-@app.route('/convert',methods=["POST"])
-def convertHV():
-    convert()
+@app.route('/Hoja_de_Vida') 
+def Hoja_de_Vida():
+    return render_template("Hoja_de_Vida.html", titulo="GESTOR DE HOJAS DE VIDA PARA EQUIPOS")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
+@app.route('/perfil_usu') 
+def perfil_usu():
+    global user
+    user=Usuario(navegante[0][0],navegante[0][1],navegante[0][2],navegante[0][3],navegante[0][4])
+    return render_template("perfil_usu.html", titulo="Perfil del usuario", datos=navegante)
+
+
+@app.route('/Equipo') #esta funcion diseñarla con desplegable
+def Equipo():
+    global disp
+    disp = Equipo('','','','','','','','')
+    return render_template('Equipo.html', titulo="Equipo")
+
+@app.route('/log', methods=['GET', 'POST'])
+def log():
+    global user
+    if request.method == "POST":
+        car_brand = request.form.get("car", None)
+        print(car_brand)
+        if eqp=="Editar usuario":
+            return render_template("perfil_usu.html", activo="activo")
+        else:
+            user.eliminar(navegante[0][0])
+            return render_template("perfil_usu.html", activo2="desactivo")
+    return render_template("perfil_usu.html")
+
+
+@app.route('/equipo2', methods=['GET', 'POST'])#adquisicion de datos de equipo
+def equipo2():
+    if request.method == "POST":
+        eqp = request.form.get("eqp", None)
+        print("1. Crear equipo")
+        print("2. Editar equipo")
+        print("3. Eliminar equipo")
+        print("4. Hoja de Vida")
+        print("5. Ver equipos")
+        if eqp=="Crear equipo":
+            return render_template("createEquipo.html")
+        elif eqp=="Editar equipo":
+            if "ing" in navegante[0][2].lower():
+                da_edita=extraccionedit()
+                return render_template("Equipo.html", num_acti = da_edita)
+            else:
+                return "Acceso no permitido"
+        elif eqp=="Eliminar equipo":
+            da_edita=extraccionedit()
+            return render_template("Equipo.html", num_acti = da_edita)
+        elif eqp=="Hoja de Vida":
+            return render_template("Hoja_de_Vida.html")
+        else:
+            ver=disp.verEquipos()
+            return render_template("Equipo.html", ver_acti = ver)
+
+    return render_template("estadisticas.html") 
+
+
+@app.route('/editor', methods=['GET', 'POST'])
+def editor():
+    if request.method == "POST":
+        numAct = request.form.get("num", None)
+        if numAct!=None:
+            disp.edit(numAct)
+    return render_template("Equipo.html")
+
+
+
+
+
+
+
+
+
+###
+
+
+if __name__ == '__main__':
+    app.run(debug = True)

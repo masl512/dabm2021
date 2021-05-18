@@ -27,14 +27,34 @@
             {% endfor %}
         </table>
         <h3>Opciones:</h3>
+        <form id="numActForm" action="see-script" method="POST">
+            <div class="formulario">
+                <input class="login--input" type="text" name="numAct" id="numAct" size="60" placeholder="> Ingrese el número de activo que desea editar o eliminar <">
+                <div class="v-btn-group">
+                    <input id="editar" class="button--edit" type="button" value="Editar" onclick="editEq()">
+                    <input id="eliminar" class="button--edit" type="button" value="Eliminar Equipo" onclick="eraseEq()">
+                </div>
+            </div>
+            </form>
+            <script>
+                var form = document.getElementById('numActForm');
+                function editEq(){
+                    console.log('ENTRA A EDIT')
+                    form.action = "/editEquipo";
+                    form.submit();
+                }
+                function eraseEq(){
+                    console.log('ENTRA A ERASE')
+                    form.action = "/eliminar";
+                    form.submit();
+                }
+            </script>
         <div class="v-btn-group">
             <input class="button--edit" type="button" value="Crear Equipo" onclick="window.open('')">
-            <input class="button--edit" type="button" value="Eliminar Equipo" onclick="window.open('')">
             <input class="button--edit" type="button" value="Hojas de Vida" onclick="window.open('/upload')">
-            <input class="button--edit" type="button" value="Editar" onclick="window.open('/editEquipo')">
         </div>
         <div class="btn-group">
-            <input class="button--edit" type="button" value="Volver" onclick="window.history.go(-1); return false;">
+            <input class="button--edit" type="button" value="Volver" onclick="window.open('/menu_principal','_self')">
         </div>
     </div>
 </body>

@@ -39,16 +39,16 @@
                 var barchart = new Chart(ctx,{
                     type: "bar",
                     data: {
-                        labels: {{ datos[0] | safe }},
+                        labels: {{ datos[0] | safe }} ,
                         datasets: [
                             {
                                 label: 'Equipos',
-                                data: {{ datos[1] | safe }},
+                                data: {{ datos[1] | safe }} ,
                                 backgroundColor: ["rgb(75,192,192)","rgb(75,192,75)","rgb(192,75,75)"],
                                 // fill: true,
                                 borderColor: ["rgb(75,192,192)","rgb(75,192,75)","rgb(192,75,75)"],
                                 // lineTension: 0.1
-                            }
+                            },
                         ]
                     },
                     options: chartOptions,
@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="btn-group">
-        <input class="button--edit" type="button" value="Volver" onclick="window.history.go(-1); return false;">
+        <input class="button--edit" type="button" value="Volver" onclick="window.open('/menu_principal','_self')">
     </div>
 
 </body>

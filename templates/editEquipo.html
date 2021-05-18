@@ -10,10 +10,25 @@
     <title>Editar Equipo</title>
 </head>
 <body>
-    <div>
-        <h1>Editor de Equipos</h1>
-        <div>
-            <input type="text" name="numAct" id="numAct">
+    <h1>Editor de Equipos</h1>
+    <div class="reg--box">
+        <div class="v-btn-group reg--container">
+            <p>Nombre:</p>
+            <input type="text" name="nombre" id="nombre" value="{{dispSel[0]}}">
+            <p>Código del equipo:</p>
+            <input type="text" name="cod" id="cod" value="{{dispSel[1]}}">
+            <p>Registro Sanitario:</p>
+            <input type="text" name="rs" id="rs" value="{{dispSel[2]}}">
+            <p>Marca:</p>
+            <input type="text" name="brand" id="brand" value="{{dispSel[3]}}">
+            <p>Modelo:</p>
+            <input type="text" name="model" id="model" value="{{dispSel[4]}}">
+            <p>Tipo:</p>
+            <input type="text" name="tipo" id="tipo" value="{{dispSel[5]}}">
+            <p>Serial:</p>
+            <input type="text" name="series" id="series" value="{{dispSel[6]}}">
+            <p>Número de Activo:</p>
+            <input type="text" name="numAct" id="numAct" value="{{dispSel[7]}}">
         </div>
     </div>
 </body>

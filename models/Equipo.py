@@ -29,6 +29,7 @@ class Equipo():
         archivo=self._file
         datos=os.path.join(directorio,archivo)
         df = pd.read_csv(datos)
+        print("-"*60)
         print(df)
         new_df = df.loc[df['NumAct'].astype(str).str.contains(num,case=False)]
         print("-"*30)
@@ -75,39 +76,14 @@ class Equipo():
             df.at[idx,'NumAct'] = n_activo+"\n"     
         
         df.to_csv(datos, index=None, mode="w", header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"])
-        
-        # df.to_csv(datos, index=False)
-
-        # directory = os.path.dirname(__file__)
-        # filePath = os.path.join(directory,self._file)
-        # file = open(filePath,"r")
-        # disp = file.readlines()
-        # indx = 0
-        # print(disp)
-        # d,indx = self.selDisp(disp,num)
-
-        # d_edit = [d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7]]
-        # d_edit = ";".join(d_edit)
-        # disp[indx] = d_edit
-        # disp = " ".join(disp)
-        # file.close()
-        # f = open(filePath, "w")
-        # f.write(disp)
-        # f.close()
 
     def erase(self,num):
-        directory = os.path.dirname(__file__)
-        filePath = os.path.join(directory,self._file)
-        file = open(filePath,"r")
-        disp = file.readlines()
-        print(disp)
-        d,indx = self.selDisp(disp,num)
-        disp.remove(disp[indx])
-        disp = "".join(disp)
-        file.close()
-        f = open(filePath, "w")
-        f.write(disp)
-        f.close()
+        df,indx,path = self.selDisp(num)
+        print(df)
+        print(indx)
+        df.drop([indx[0]],inplace= True)
+        print(df)
+        df.to_csv(path, index=None, mode="w",header=["Nombre","Cod","RegSan","Marca","Modelo","Tipo","Serial","NumAct"])
 
     def verEquipos(self):
         directorio=os.path.dirname(__file__)
