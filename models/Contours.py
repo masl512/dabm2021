@@ -20,7 +20,6 @@ def sort_contours(cnts, method="left-to-right"):
 	
 	(cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes), key=lambda b:b[1][i], reverse=reverse))
 	# boundingBoxes = sorted(boundingBoxes, key=lambda b:(b[0],b[1]), reverse=reverse)
-# AQUÍ TENGO QUE REVISAR CÓMO SE ORDENAN LAS BOUNDINGBOXES
 
 	# return the list of sorted contours and bounding boxes
 	return (cnts, boundingBoxes)

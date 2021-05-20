@@ -4,12 +4,12 @@ import pandas as pd
 
 def sortContours(cnts):
     boundingBoxes = [cv2.boundingRect(c) for c in cnts]
-    print(boundingBoxes)
+    # print(boundingBoxes)
     df = pd.DataFrame(boundingBoxes, columns=['x','y','w','h'])
-    print(df)
+    # print(df)
     df.sort_values(by=['y','x'], inplace= True)
     boundingBoxes = df.values.tolist()
-    print(boundingBoxes)
+    # print(boundingBoxes)
     return boundingBoxes
 
 

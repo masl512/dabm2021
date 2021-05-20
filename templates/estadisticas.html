@@ -39,11 +39,11 @@
                 var barchart = new Chart(ctx,{
                     type: "bar",
                     data: {
-                        labels: {{ datos[0] | safe }} ,
+                        labels: {{ datosGen[0] | safe }} ,
                         datasets: [
                             {
                                 label: 'Equipos',
-                                data: {{ datos[1] | safe }} ,
+                                data: {{ datosGen[1] | safe }} ,
                                 backgroundColor: ["rgb(75,192,192)","rgb(75,192,75)","rgb(192,75,75)"],
                                 // fill: true,
                                 borderColor: ["rgb(75,192,192)","rgb(75,192,75)","rgb(192,75,75)"],
@@ -56,9 +56,20 @@
             </script>
         </div>
     </div>
-    <div class="btn-group">
-        <input class="button--edit" type="button" value="Volver" onclick="window.open('/menu_principal','_self')">
-    </div>
+    <form id="numActForm" action="/individual" method="POST">
+            <div class="formulario">
+                <select name="numAct" id="numAct">
+                <option value="0">->Seleccionar Número de Activo <-</option>
+                {% for n in numActs%}
+                <option value="{{n}}">{{n}}</option>
+                {% endfor %}
+                </select>
+                <div class="v-btn-group">
+                    <input id="editar" class="button--edit" type="submit" value="Ver Datos">
+                    <input class="button--edit" type="button" value="Volver" onclick="window.open('/menu_principal','_self')">
+                </div>
+            </div>
+    </form>
 
 </body>
 </html>

@@ -1,9 +1,23 @@
 <html>
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+      <title>Crear Equipo</title>
+  </head>
    <body>
-      <form action = "http://localhost:5000/uploader" method = "POST" 
+      <h1>Subir Imagen:</h1>
+      <div>
+      <form class="menu--box" action = "http://localhost:5000/uploader" method = "POST" 
          enctype = "multipart/form-data">
-         <input type = "file" name = "file" />
-         <input type = "submit"/>
-      </form>   
+      <div class="reg--container">
+         <input class="reg--input file--loader" type = "file" name = "file" />
+         <input class="button" type = "submit" value="Convertir"/>
+      </div>
+      </form>
+   </div>
    </body>
 </html>

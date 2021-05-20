@@ -16,9 +16,11 @@ def createHeaders(headers,values):
     df1.to_csv(datos, index=None, mode="a", header=not os.path.isfile(datos))
 
 def  get_matches(refTitle,matrix):
+    flag = False
     match = difflib.get_close_matches(refTitle,matrix)
     if len(match)>0:
         match = match[0]
+        flag = True
         return match
 
 
@@ -37,25 +39,6 @@ def readHV(fileName):
     return matriz
 
 def extract(inMatrix):
-    headers = []
-    values = []
-    match = get_matches("CODIGO DEL PRESTADOR",inMatrix)
-    idx = inMatrix.index(match)
-    del inMatrix[0:idx]
-
-    for item in inMatrix:
-        cnt = 0
-        for i in item:
-            if i.isupper():
-                cnt += 1
-        if len(item) > 0:
-            rate = cnt/len(item)
-            if rate > 0.3 and len(item) > 3:            
-                headers.append(item)
-            else:
-                values.append(item)
-        else:
-            values.append("-")
-    print(headers)
-    print(values)
+    headers = [ h[0] for h in inMatrix if len(h[0])>2]
+    values = [v[1] for v in inMatrix if len(v[0])>2]
     return headers,values

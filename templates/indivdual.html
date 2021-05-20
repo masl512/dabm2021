@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <title>Estadísticas Individuales</title>
+</head>
+<body>
+    <h1>Estadísticas Individuales</h1>
+    <div>
+        <div class="indiv-container">
+            <table class="indiv-table">
+                <tr class="table--header">
+                    {% for header in headers %}
+                    <th class="table--cell">{{header}}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in indiv %}
+                <tr class="table--row">
+                    {% for cell in row %}
+                    <td class="table--cell">{{cell}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="graph">
+                <canvas id="barchart" width="500" height="200"></canvas>
+                <script>
+                var chartOptions = {
+                    rotation: -Math.PI,
+                    cutoutPercentage: 30,
+                    circumference: Math.PI,
+                    legend: {
+                        position: 'bottom'
+                    },
+                    animation: {
+                        animateRotate: false,
+                        animateScale: true
+                    }
+                };
+                var datosG = {
+                            labels: {{ dias | safe }} ,
+                            datasets: [
+                                {
+                                    label: 'Días',
+                                    data: {{ dias | safe }} ,
+                                    backgroundColor: ["rgb(75,192,192)","rgb(75,192,75)","rgb(192,75,75)"],
+                                    // fill: true,
+                                    borderColor: ["rgb(75,192,192)","rgb(75,192,75)","rgb(192,75,75)"],
+                                    // lineTension: 0.1
+                                },
+                            ]
+                        };
+                    var ctx = document.getElementById("barchart").getContext("2d");
+                    var barchart = new Chart(ctx,{
+                        type: "doughnut",
+                        data: datosG,
+                        options: chartOptions,
+                    });
+                </script>
+            </div>
+            
+        </div>
+        <div class="btn-group">
+            <input class="button--edit" type="button" value="Volver" onclick="window.open('/estadisticas','_self')">
+        </div>
+    </div>
+</body>
+</html>

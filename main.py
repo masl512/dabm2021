@@ -131,7 +131,13 @@ def estadisticas():
     _file=r"general.csv"
     estd=Estadistica(_file)
     datosGen=estd.general()
-    return render_template('estadisticas.html', titulo="Estadisticas", datos = datosGen)
+    directorio = os.path.dirname(__file__)
+    archivoUsuarios=os.path.join(directorio,'models','individual.csv')
+    df = pd.read_csv(archivoUsuarios)
+    numActs = df['n_act']
+    numActs = numActs.to_numpy()    
+    # numActs,datosInd,diff = estd.ind()
+    return render_template('estadisticas.html', numActs = numActs, datosGen = datosGen)
 
 @app.route('/upload')
 def upload_file():
@@ -143,28 +149,27 @@ def uploader_file():
       f = request.files['file']
       name = os.path.join(app.instance_path, 'htmlfi', secure_filename(f.filename))
       f.save(name)
-    #   f.save(secure_filename(f.filename))
-    #   name = secure_filename(f.filename)
       print("-"*60)
       print(name)
       HojaDeVida().create(str(name))
-      return 'file uploaded successfully'
+      return redirect(url_for("inventario"))
 
 @app.route('/user')
 def usuario():
     return render_template('user.html', user=navegante)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/individual', methods=['GET', 'POST'])
+def indivEstad():
     if request.method == "POST":
-        n_act = request.form.get("act", None)
+        n_act = request.form.get("numAct", None)
         print(n_act)
         _file=r"individual.csv"
         estd=Estadistica(_file)
-        data=estd.ind(n_act) 
-        if car_brand!=None:
-            return render_template("estadisticas.html", datosT = data[0], datosT1 = data[1])
-    return render_template("estadisticas.html") 
+        headers = ['Num. Activo','Fecha de Instalación','Mantenimiento','Riesgo']
+        indiv , data=estd.ind(n_act) 
+        if data!=None:
+            return render_template("indivdual.html", headers=headers, dias=data, indiv = indiv)
+    return redirect(url_for("estadisticas"))
 
 @app.route('/guardar', methods=["POST"])
 def guardar():
@@ -178,7 +183,7 @@ def guardar():
                 return redirect(url_for("menu_principal"))
         else:
             return redirect(url_for("inicio"))
-    return "Acceso no permitido"
+    return redirect(url_for("inicio"))
 
 @app.route('/registrar', methods=["POST"])
 def registrar():
@@ -192,7 +197,7 @@ def registrar():
         u1=Usuario(nombre,documento,cargo,celular,contraseña)
         u1.save()
         return redirect(url_for("inicio"))
-    return "Registro no permitido"
+    return redirect(url_for("inicio"))
 
 @app.route('/creareq', methods=["POST"])
 def creareq():
@@ -211,77 +216,7 @@ def creareq():
         # disp = Equipo()
         dis.create()
         return redirect(url_for("inventario"))
-    return "Registro no permitido"
-
-
-@app.route('/Hoja_de_Vida') 
-def Hoja_de_Vida():
-    return render_template("Hoja_de_Vida.html", titulo="GESTOR DE HOJAS DE VIDA PARA EQUIPOS")
-
-
-@app.route('/perfil_usu') 
-def perfil_usu():
-    global user
-    user=Usuario(navegante[0][0],navegante[0][1],navegante[0][2],navegante[0][3],navegante[0][4])
-    return render_template("perfil_usu.html", titulo="Perfil del usuario", datos=navegante)
-
-
-# @app.route('/Equipo') #esta funcion diseñarla con desplegable
-# def Equipo():
-#     global disp
-#     disp = Equipo('','','','','','','','')
-#     return render_template('Equipo.html', titulo="Equipo")
-
-@app.route('/log', methods=['GET', 'POST'])
-def log():
-    global user
-    if request.method == "POST":
-        car_brand = request.form.get("car", None)
-        print(car_brand)
-        if eqp=="Editar usuario":
-            return render_template("perfil_usu.html", activo="activo")
-        else:
-            user.eliminar(navegante[0][0])
-            return render_template("perfil_usu.html", activo2="desactivo")
-    return render_template("perfil_usu.html")
-
-
-@app.route('/equipo2', methods=['GET', 'POST'])#adquisicion de datos de equipo
-def equipo2():
-    if request.method == "POST":
-        eqp = request.form.get("eqp", None)
-        print("1. Crear equipo")
-        print("2. Editar equipo")
-        print("3. Eliminar equipo")
-        print("4. Hoja de Vida")
-        print("5. Ver equipos")
-        if eqp=="Crear equipo":
-            return render_template("createEquipo.html")
-        elif eqp=="Editar equipo":
-            if "ing" in navegante[0][2].lower():
-                da_edita=extraccionedit()
-                return render_template("Equipo.html", num_acti = da_edita)
-            else:
-                return "Acceso no permitido"
-        elif eqp=="Eliminar equipo":
-            da_edita=extraccionedit()
-            return render_template("Equipo.html", num_acti = da_edita)
-        elif eqp=="Hoja de Vida":
-            return render_template("Hoja_de_Vida.html")
-        else:
-            ver=disp.verEquipos()
-            return render_template("Equipo.html", ver_acti = ver)
-
-    return render_template("estadisticas.html") 
-
-
-@app.route('/editor', methods=['GET', 'POST'])
-def editor():
-    if request.method == "POST":
-        numAct = request.form.get("num", None)
-        if numAct!=None:
-            disp.edit(numAct)
-    return render_template("Equipo.html")
+    return redirect(url_for("inventario"))
 
 @app.route('/getEdit',methods=['POST'])
 def getEdit():
@@ -317,11 +252,7 @@ def getEditUser():
         cambios = [nombre,cedula,cargo,cel,pw]
         user.editUser(cambios,cedula)
         return redirect(url_for("usuario"))
-  
 
-
-###
-
-
+# PUNTO DE ACCESO
 if __name__ == '__main__':
     app.run(debug = True)

@@ -29,17 +29,19 @@ class Estadistica():
         file = open(archivoUsuarios,"a")
         file.close()
         df = pd.read_csv(archivoUsuarios)
-        a=df[(df['n_act'] == int(numer))]
+        a=df[(df['n_act'] == numer)]
         print(a)
         nume=a.to_numpy()
         fechaN=nume[0][1]
         arr = fechaN.split('-')
         fecha2 = datetime(int(arr[2]),int(arr[1]),int(arr[0]))
-        if nume[0][2]=="mensual":
+        tipoMant = nume[0][2]
+        tipoMant = tipoMant.lower()
+        if tipoMant =="mensual":
             diferencia = fecha2 + timedelta(days=30)
-        elif nume[0][2]=="bimestral":
+        elif tipoMant=="bimestral":
             diferencia = fecha2 + timedelta(days=15)
-        elif nume[0][2]=="trimestral":
+        elif tipoMant=="trimestral":
             diferencia = fecha2 + timedelta(days=90)
         else:
             diferencia = fecha2 + timedelta(days=180)
@@ -47,17 +49,15 @@ class Estadistica():
         remaining_days = (diferencia - today).days
         remaining_days2 = (diferencia - fecha2).days
         rest=remaining_days2-remaining_days
-        turi = [remaining_days,rest]
-        paises = ['Días restantes: '+ str(turi[0]), 'Dias abarcados: '+ str(turi[1])]
-        explode = [0, 0]  # Destacar algunos
-        return num,turi
+        diff = [remaining_days,rest]
+        return nume,diff
     
-    def addIndividual(self):
+    def addIndividual(self, values):
         directorio = os.path.dirname(__file__)
         archivoUsuarios=os.path.join(directorio,self._file)
         if os.stat(archivoUsuarios).st_size == 0:
             columnas =pd.DataFrame([["n_act","fecha","mantenimiento","riesgo"]])
             columnas.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))
-        data1 = [[self.n_act,self.fecha,self.mantenimiento,self.riesgo]]
+        data1 = [[values[0],values[1],values[2],values[3]]]
         df1 = pd.DataFrame(data1)
         df1.to_csv(archivoUsuarios, index=None, mode="a", header=not os.path.isfile(archivoUsuarios))
